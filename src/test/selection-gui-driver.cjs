@@ -35,6 +35,43 @@ module.exports = async ({win, fs}) => {
  let checks=0;
  const eq = (a,b,label) => {assert.deepEqual(a,b,label);checks++;};
  for (const zoom of [0.5,1,2]) {
+  await load(11,zoom);
+  const rectangleXml=await xml();
+  const rearStroke=[460*zoom,250*zoom],frontStroke=[220*zoom,250*zoom];
+  eq(await click(...rearStroke),['A'],'unfilled front rectangle passes through to rear stroke');
+  eq(await click(...rearStroke),['A'],'rear stroke remains selected on repeat');
+  eq(await click(...frontStroke),['B'],'front rectangle stroke remains selectable');
+  eq(await click(...rearStroke),['A'],'rear stroke is selectable when front is selected');
+  eq(await xml(),rectangleXml,'rectangle selection preserves geometry and order');
+  eq(await click(300*zoom,300*zoom),[],'both empty interiors pass through');
+  eq(await click(460*zoom,220*zoom),['B'],'coincident strokes use front order');
+  await run("graph.orderCells(true,[graph.model.getCell('B')]);graph.clearSelection();");
+  eq(await click(460*zoom,220*zoom),['A'],'coincident strokes follow reversed order');
+  eq(await click(...frontStroke),['B'],'formerly front stroke is selectable after reversing order');
+  await run("graph.model.beginUpdate();try{var layer=new mxCell();layer.id='secondLayer';graph.model.add(graph.model.getRoot(),layer);graph.model.add(layer,graph.model.getCell('B'));}finally{graph.model.endUpdate();}graph.clearSelection();");
+  eq(await click(...rearStroke),['A'],'unfilled rectangles pass through across layers');
+  eq(await click(...frontStroke),['B'],'front-layer stroke is selectable');
+  await load(11,zoom);
+  const fixedRectangle=await bounds('B');
+  await drag(...rearStroke,20*zoom,20*zoom);
+  eq(await bounds('A'),{x:180*zoom,y:200*zoom,w:300*zoom,h:200*zoom},'visible rear stroke drags its rectangle');
+  eq(await bounds('B'),fixedRectangle,'rear-stroke drag leaves front rectangle unchanged');
+  await load(11,zoom);
+  await run("graph.insertVertex(graph.getDefaultParent(),'marker','',320,320,40,30,'fillColor=#dae8fc;');void 0;");
+  await drag(280*zoom,290*zoom,120*zoom,100*zoom);
+  eq(await selection(),['marker'],'rectangle interiors allow rubberband selection');
+  eq(await bounds('A'),{x:160*zoom,y:180*zoom,w:300*zoom,h:200*zoom},'rubberband does not move rear rectangle');
+  eq(await bounds('B'),fixedRectangle,'rubberband does not move front rectangle');
+  for(const [style,expected] of [
+   ['fillColor=#f8cecc;fillOpacity=0;','A'],
+   ['fillColor=none;pointerEvents=0;','A'],
+   ['fillColor=#f8cecc;fillOpacity=30;','B']
+  ]) {
+   await load(11,zoom);
+   await run(`graph.model.setStyle(graph.model.getCell('B'),'rounded=0;strokeColor=#b85450;'+${JSON.stringify(style)});`);
+   eq(await click(...rearStroke),[expected],'rectangle fill and pointer-event styles');
+  }
+  if(process.argv.includes('--rectangles-only')) continue;
   for (let page=process.argv.includes('--extended-only')?11:1;page<=10;page++) {
    await load(page,zoom);
    const original=await xml();

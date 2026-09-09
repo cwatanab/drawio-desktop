@@ -8,6 +8,8 @@ import vm from 'node:vm';
 const source = readFileSync(new URL('../../drawio/src/main/webapp/js/grapheditor/Graph.js', import.meta.url), 'utf8');
 const context = vm.createContext({
 	Graph: function() {},
+	mxRectangleShape: function() {},
+	mxLabel: function() {},
 	document: {createElementNS: (namespaceURI, tagName) => ({namespaceURI, tagName})},
 	mxPoint: function(x, y) { this.x = x; this.y = y; },
 	mxConstants: {
@@ -31,7 +33,7 @@ const context = vm.createContext({
 	},
 	mxEvent: {addListener() {}, removeListener() {}}
 });
-for (const name of ['intersectsSelectionContainer', 'initSelectionContainerHints', 'updateSelectionContainerHandleTitle'])
+for (const name of ['isSelectionBackground', 'intersectsSelectionContainer', 'initSelectionContainerHints', 'updateSelectionContainerHandleTitle'])
 {
 	const start = source.indexOf(`Graph.prototype.${name} = function(`);
 	assert.notEqual(start, -1);
@@ -39,6 +41,32 @@ for (const name of ['intersectsSelectionContainer', 'initSelectionContainerHints
 	vm.runInContext(source.slice(start, end + 3), context);
 }
 const methods = context.Graph.prototype;
+
+test('ordinary rectangles share background hit testing without treating other shapes as rectangles', () =>
+{
+	const graph = {
+		isSelectionContainer: cell => cell.container === true,
+		model: {isVertex: cell => cell.vertex === true},
+		isPart: cell => cell.part === true,
+		isTable: cell => cell.table === true
+	};
+	const rectangle = new context.mxRectangleShape();
+	const matches = (cell, shape = rectangle) => methods.isSelectionBackground.call(graph, {cell, shape});
+	assert.equal(matches({vertex: true}), true);
+	assert.equal(matches({vertex: true}, new context.mxLabel()), true);
+	for (const property of ['image', 'indicator', 'indicatorImage', 'indicatorShape'])
+	{
+		const label = new context.mxLabel();
+		label[property] = {};
+		assert.equal(matches({vertex: true}, label), false);
+	}
+	assert.equal(matches({vertex: true, part: true}), false);
+	assert.equal(matches({vertex: true, table: true}), false);
+	assert.equal(matches({vertex: false}), false);
+	assert.equal(matches({vertex: true}, {}), false);
+	assert.equal(matches({vertex: true}, null), false);
+	assert.equal(matches({vertex: true, container: true}, {}), true);
+});
 
 function hit(style, x = 50, y = 50, extra = {})
 {

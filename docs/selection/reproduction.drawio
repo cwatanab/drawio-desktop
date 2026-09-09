@@ -212,4 +212,21 @@
       </root>
     </mxGraphModel>
   </diagram>
+  <diagram id="p11" name="11_塗りなし矩形の重なり">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="note" value="グループではない塗りなし矩形2つ。前面Bの内側から見えるAの右枠線を選択。前後順・レイヤーを変えても各枠線を選択できること。" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="20" width="1000" height="90" />
+        </mxCell>
+        <mxCell id="A" value="" style="rounded=0;fillColor=none;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="160" y="180" width="300" height="200" />
+        </mxCell>
+        <mxCell id="B" value="" style="rounded=0;fillColor=none;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="220" y="220" width="300" height="200" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
 </mxfile>
