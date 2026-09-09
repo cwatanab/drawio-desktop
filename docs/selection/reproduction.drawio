@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="drawio-desktop" compressed="false">
+  <diagram id="p1" name="01_透明コンテナ">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" page="1" pageWidth="1169" pageHeight="827">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="note" value="Bの直接選択／Cの背面選択／親の右下の空白から範囲選択。枠線とBの境界付近も確認。" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="20" width="1000" height="90" />
+        </mxCell>
+        <mxCell id="C" value="C：親の背面" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="260" width="110" height="70" />
+        </mxCell>
+        <mxCell id="A" value="A：コンテナ" style="rounded=0;container=1;collapsible=0;whiteSpace=wrap;html=0;fillColor=none;strokeColor=#b85450;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="160" y="150" width="400" height="340" />
+        </mxCell>
+        <mxCell id="B" value="B：子" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="40" y="80" width="140" height="80" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p2" name="02_pointerEvents比較">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" page="1" pageWidth="1169" pageHeight="827">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="note" value="Bの直接選択／Cの背面選択／親の右下の空白から範囲選択。枠線とBの境界付近も確認。" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="20" width="1000" height="90" />
+        </mxCell>
+        <mxCell id="C" value="C：親の背面" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="260" width="110" height="70" />
+        </mxCell>
+        <mxCell id="A" value="A：コンテナ" style="rounded=0;container=1;collapsible=0;whiteSpace=wrap;html=0;fillColor=none;strokeColor=#b85450;verticalAlign=top;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="160" y="150" width="400" height="340" />
+        </mxCell>
+        <mxCell id="B" value="B：子" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="40" y="80" width="140" height="80" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p3" name="03_塗り不透明度0">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" page="1" pageWidth="1169" pageHeight="827">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="note" value="Bの直接選択／Cの背面選択／親の右下の空白から範囲選択。枠線とBの境界付近も確認。" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="20" width="1000" height="90" />
+        </mxCell>
+        <mxCell id="C" value="C：親の背面" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="260" width="110" height="70" />
+        </mxCell>
+        <mxCell id="A" value="A：コンテナ" style="rounded=0;container=1;collapsible=0;whiteSpace=wrap;html=0;fillColor=none;strokeColor=#b85450;verticalAlign=top;fillColor=#f8cecc;fillOpacity=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="160" y="150" width="400" height="340" />
+        </mxCell>
+        <mxCell id="B" value="B：子" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="40" y="80" width="140" height="80" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p4" name="04_半透明">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" page="1" pageWidth="1169" pageHeight="827">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="note" value="Bの直接選択／Cの背面選択／親の右下の空白から範囲選択。枠線とBの境界付近も確認。" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="20" width="1000" height="90" />
+        </mxCell>
+        <mxCell id="C" value="C：親の背面" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="380" y="260" width="110" height="70" />
+        </mxCell>
+        <mxCell id="A" value="A：コンテナ" style="rounded=0;container=1;collapsible=0;whiteSpace=wrap;html=0;fillColor=none;strokeColor=#b85450;verticalAlign=top;fillColor=#f8cecc;fillOpacity=30;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="160" y="150" width="400" height="340" />
+        </mxCell>
+        <mxCell id="B" value="B：子" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="40" y="80" width="140" height="80" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p5" name="05_通常グループ">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" page="1" pageWidth="1169" pageHeight="827">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="note" value="Bを繰り返しクリック／Bからドラッグ／親の移動ハンドル／Bの縮小・削除とUndo。08は子の個別編集を禁止。" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="20" width="1000" height="90" />
+        </mxCell>
+        <mxCell id="A" value="" style="group;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="160" y="150" width="400" height="220" />
+        </mxCell>
+        <mxCell id="B" value="B" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="40" y="50" width="140" height="80" />
+        </mxCell>
+        <mxCell id="C" value="C" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="240" y="150" width="120" height="60" />
+        </mxCell>
+        <mxCell id="edge" value="接続線" style="edgeStyle=orthogonalEdgeStyle;html=0;" edge="1" parent="A" source="B" target="C">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p6" name="06_自動境界グループ">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" page="1" pageWidth="1169" pageHeight="827">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="note" value="Bを繰り返しクリック／Bからドラッグ／親の移動ハンドル／Bの縮小・削除とUndo。08は子の個別編集を禁止。" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="20" width="1000" height="90" />
+        </mxCell>
+        <mxCell id="A" value="" style="group;transparentBounds=1;groupPadding=20;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="0" height="0" />
+        </mxCell>
+        <mxCell id="B" value="B" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="200" y="200" width="140" height="80" />
+        </mxCell>
+        <mxCell id="C" value="C" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="400" y="300" width="120" height="60" />
+        </mxCell>
+        <mxCell id="edge" value="接続線" style="edgeStyle=orthogonalEdgeStyle;html=0;" edge="1" parent="A" source="B" target="C">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p7" name="07_親優先指定">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" page="1" pageWidth="1169" pageHeight="827">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="note" value="Bを繰り返しクリック／Bからドラッグ／親の移動ハンドル／Bの縮小・削除とUndo。08は子の個別編集を禁止。" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="20" width="1000" height="90" />
+        </mxCell>
+        <mxCell id="A" value="" style="group;transparentBounds=1;groupPadding=20;selectParentFirst=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="0" height="0" />
+        </mxCell>
+        <mxCell id="B" value="B" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="200" y="200" width="140" height="80" />
+        </mxCell>
+        <mxCell id="C" value="C" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="400" y="300" width="120" height="60" />
+        </mxCell>
+        <mxCell id="edge" value="接続線" style="edgeStyle=orthogonalEdgeStyle;html=0;" edge="1" parent="A" source="B" target="C">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p8" name="08_グループロック">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" page="1" pageWidth="1169" pageHeight="827">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="note" value="Bを繰り返しクリック／Bからドラッグ／親の移動ハンドル／Bの縮小・削除とUndo。08は子の個別編集を禁止。" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="20" width="1000" height="90" />
+        </mxCell>
+        <mxCell id="A" value="" style="group;transparentBounds=1;groupPadding=20;lockedGroup=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="0" height="0" />
+        </mxCell>
+        <mxCell id="B" value="B" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="200" y="200" width="140" height="80" />
+        </mxCell>
+        <mxCell id="C" value="C" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="400" y="300" width="120" height="60" />
+        </mxCell>
+        <mxCell id="edge" value="接続線" style="edgeStyle=orthogonalEdgeStyle;html=0;" edge="1" parent="A" source="B" target="C">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p9" name="09_入れ子">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" page="1" pageWidth="1169" pageHeight="827">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="note" value="Bを直接選択。外側A・内側Gのハンドルの識別、枠の重なり、各親の移動を確認。" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="20" width="1000" height="90" />
+        </mxCell>
+        <mxCell id="A" value="" style="group;transparentBounds=1;groupPadding=20;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="0" height="0" />
+        </mxCell>
+        <mxCell id="G" value="" style="group;transparentBounds=1;groupPadding=20;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="0" y="0" width="0" height="0" />
+        </mxCell>
+        <mxCell id="B" value="B：孫" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="G">
+          <mxGeometry as="geometry" x="220" y="220" width="140" height="80" />
+        </mxCell>
+        <mxCell id="D" value="D：外側の子" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="A">
+          <mxGeometry as="geometry" x="500" y="360" width="120" height="70" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p10" name="10_背面の移動">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" page="1" pageWidth="1169" pageHeight="827">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="note" value="Cを選択後、重なりの大きいBへ選択が移らずCを移動できるか確認。" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="20" y="20" width="1000" height="90" />
+        </mxCell>
+        <mxCell id="C" value="C" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;moveIcon=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="160" y="180" width="300" height="180" />
+        </mxCell>
+        <mxCell id="B" value="B：前面" style="fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="170" y="190" width="300" height="180" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
