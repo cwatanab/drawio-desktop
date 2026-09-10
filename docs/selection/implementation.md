@@ -12,7 +12,7 @@ The source editor, generated application bundle and both viewer bundles have bee
 - `src/test/selection-container.test.js`: focused regression tests for geometry, opacity, hover retention and hierarchy labels.
 - `src/test/selection-gui.cjs` and `selection-gui-driver.cjs`: repeatable Electron interaction tests, viewer smoke checks and optional screenshots. Both files are in `src/test`.
 - `package.json`: includes the selection unit tests in `npm test` and adds `test:selection-gui`.
-- `docs/selection`: preserves the preimplementation analysis, eleven-page reproduction drawing and this implementation/verification record.
+- `docs/selection`: preserves the preimplementation analysis, twelve-page reproduction drawing and this implementation/verification record.
 
 The pre-existing local `src/main/disableUpdate.js` change is independent of selection behavior and is not included in the selection commits.
 
@@ -84,4 +84,29 @@ Verification on 2026-09-09 after the final follow-up changes:
 
 Follow-up editor revision: `cc95cf5` (`fix(selection): reach rear rectangle borders`). The Desktop commit records the updated submodule revision, tests and reproduction drawing. Publishing is not included.
 
-Outstanding report (2026-09-10): clicking visible borders of overlapping unfilled rectangles can sometimes leave neither rectangle selectable. This intermittent case has not been reproduced or fixed; a sample drawing and click location are still needed. The passing regression cases above do not establish that this report is resolved.
+Additional report (2026-09-10): clicking visible borders of overlapping unfilled rectangles can sometimes leave neither rectangle selectable after another rectangle was selected. The supplied `sample.drawio` allowed the outer-border hit failure described below to be reproduced. A persistent inability to select even at exact border coordinates was not independently reproduced.
+
+## Follow-up: outer border tolerance and selection switching (2026-09-10)
+
+The selection filter accepted a narrow band around a visible border, but `getCellAt` subsequently applied `mxGraph.intersects`, which rejects vertex coordinates outside the strict rectangle bounds. Thus the outer half of the border's click tolerance was lost. In the supplied three-rectangle drawing, selecting C and then clicking one pixel outside A's right border cleared selection instead of selecting A. The new GUI regression failed against the previous bundle with exactly that result.
+
+`getSelectionCellAt` now traverses cells in the same child-first, front-to-back order using the selection-specific hit test directly. Other geometries retain their existing `intersects` test; connection and drop-target `getCellAt` behavior is unchanged. The transparent border test now has explicit outer bounds, so distant shapes cannot become false targets. Filled rectangles retain strict bounds, preserving selection of exposed objects behind them. CSS zoom and translation are converted once, with border tolerance measured in screen pixels.
+
+Fixture page 12 preserves the supplied drawing's geometry and styles with stable A/B/C test IDs. The added 75 native-pointer assertions cover repeated switching from another selected rectangle, inner and outer border pixels, clearing and recovering selection, dragging from the outer border, unchanged serialization, and CSS zoom/translation at 50%, 100% and 200%. Explicit connection points are avoided in the border-drag test. Use `--sample-only` for these cases.
+
+- Source and generated application bundle each passed **567 GUI assertions**.
+- All **10 selection unit tests** and all five files in `npm test` passed.
+- Ant `app` completed with zero compiler errors and warnings.
+
+This fixes the confirmed outer-border hit failure. It does not establish that every possible persistent selection failure in the reported Windows workflow is resolved.
+
+### Local Windows build
+
+Created `dist/windows-selection-fix/draw.io-31.4.4-windows-x64-selection-fix.zip` with Electron 44.2.0 and electron-builder 26.16.0. Extract the entire ZIP and run `draw.io.exe`; this is not an installer. Editor revision: `25b3cc5` (`fix(selection): retain outer border tolerance`). The Desktop commit records this revision, tests and documentation; the local ZIP is not tracked or published.
+
+The build uses `electron-builder-win.json` with a local overlay: x64 ZIP target, `win.signExecutable=false`, `--publish never`, the original `build/fuses.mjs` hook, and runtime-only files (`src/main`, `drawio/src/main/webapp` excluding `WEB-INF`, `package.json`, `LICENSE`, plus production dependencies). User drawings, tests and workspace configuration are not packaged. The existing local `disableUpdate.js=true` setting is preserved, so this build does not auto-update.
+
+- ZIP integrity test passed. The executable is a Windows x64 PE image; the expected Electron security fuses remain set.
+- Packaged Graph source and application bundle exactly match the tested workspace files. Both generated viewer bundles passed rendering and cleanup smoke checks.
+- The build is unsigned. Windows-native launch and interaction have not been tested on this Linux build host.
+- ZIP SHA-256: `987689af7d80810f742d8044a975d2dcda69ad487744ba49df53db02022c9baa`.

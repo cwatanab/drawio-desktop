@@ -33,7 +33,7 @@ const context = vm.createContext({
 	},
 	mxEvent: {addListener() {}, removeListener() {}}
 });
-for (const name of ['isSelectionBackground', 'intersectsSelectionContainer', 'initSelectionContainerHints', 'updateSelectionContainerHandleTitle'])
+for (const name of ['isSelectionBackground', 'getSelectionCellAt', 'intersectsSelectionContainer', 'initSelectionContainerHints', 'updateSelectionContainerHandleTitle'])
 {
 	const start = source.indexOf(`Graph.prototype.${name} = function(`);
 	assert.notEqual(start, -1);
@@ -98,6 +98,58 @@ test('border tolerance stays in screen pixels under CSS zoom', () =>
 	const style = {fillColor: 'none', strokeColor: '#000'};
 	assert.equal(hit(style, 3, 50), true);
 	assert.equal(hit(style, 3, 50, {useCssTransforms: true, currentScale: 2}), false);
+});
+
+test('border tolerance is bounded on both sides and does not select distant shapes', () =>
+{
+	const style = {fillColor: 'none', strokeColor: '#000'};
+	for (const [x, y] of [[-1, 50], [101, 50], [50, -1], [50, 101]])
+	{
+		assert.equal(hit(style, x, y), true);
+	}
+	for (const [x, y] of [[-5, 50], [105, 50], [50, -5], [50, 105], [-100, -100]])
+	{
+		assert.equal(hit(style, x, y), false);
+		assert.equal(hit({...style, fillColor: '#fff'}, x, y), false);
+	}
+	assert.equal(hit(style, -3, 50, {useCssTransforms: true, currentScale: 2}), false);
+	assert.equal(hit({...style, fillColor: '#fff'}, -1, 50), false);
+	assert.equal(hit({...style, rotation: 45}, 86, 86), true);
+	assert.equal(hit({...style, rotation: 45}, 100, 100), false);
+});
+
+test('selection traversal retains outer border tolerance, front order and CSS coordinates', () =>
+{
+	const a = {id: 'A', vertex: true, children: []};
+	const b = {id: 'B', vertex: true, children: []};
+	const root = {children: [{children: [a, b]}]};
+	const states = new Map([a, b].map((cell, i) => [cell, {
+		cell, style: {fillColor: 'none', strokeColor: '#000'},
+		x: i * 50, y: i * 50, width: 100, height: 100
+	}]));
+	const graph = {
+		model: {getRoot: () => root, getChildCount: c => c.children.length,
+			getChildAt: (c, i) => c.children[i], isVertex: c => c.vertex, isEdge: () => false},
+		view: {getState: c => states.get(c)}, getCurrentRoot: () => null,
+		isCellVisible: () => true, isSelectionBackground: () => true,
+		intersectsSelectionContainer: methods.intersectsSelectionContainer,
+		isSwimlane: () => false, tolerance: 4
+	};
+	const select = (x, y) => methods.getSelectionCellAt.call(graph, x, y);
+	assert.equal(select(101, 75), a);
+	assert.equal(select(49, 75), b);
+	assert.equal(select(100, 50), b);
+	assert.equal(select(75, 75), null);
+	assert.equal(select(500, 500), null);
+	graph.useCssTransforms = true;
+	graph.currentScale = 2;
+	graph.currentTranslate = {x: 10, y: 20};
+	assert.equal(select(222, 190), a);
+	assert.equal(select(228, 190), null);
+	// Non-background geometries must retain their own hit test.
+	graph.isSelectionBackground = () => false;
+	graph.intersects = state => state.cell === a;
+	assert.equal(select(222, 190), a);
 });
 
 function hoverFixture(css = false)

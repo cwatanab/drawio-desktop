@@ -35,6 +35,35 @@ module.exports = async ({win, fs}) => {
  let checks=0;
  const eq = (a,b,label) => {assert.deepEqual(a,b,label);checks++;};
  for (const zoom of [0.5,1,2]) {
+  await load(12,zoom);
+  const sampleXml=await xml();
+  // User-provided sample.drawio geometry; test screen-pixel offsets, not
+  // just exact mathematical borders, with another rectangle selected.
+  for(let repeat=0;repeat<3;repeat++) {
+   eq(await click(500*zoom,550*zoom),['C'],'select third rectangle before switching');
+   eq(await click(300*zoom+1,450*zoom),['A'],'rear border outer pixel after other selection');
+   eq(await click(200*zoom-1,450*zoom),['B'],'front border outer pixel after other selection');
+   eq(await click(300*zoom-1,450*zoom),['A'],'rear border inner pixel remains selectable');
+   eq(await click(200*zoom+1,450*zoom),['B'],'front border inner pixel remains selectable');
+  }
+  eq(await click(300*zoom+8,450*zoom),[],'outside border tolerance clears selection');
+  eq(await click(250*zoom,450*zoom),[],'overlapping empty interiors remain transparent');
+  eq(await click(300*zoom,450*zoom),['A'],'selection recovers after blank clicks');
+  eq(await xml(),sampleXml,'switching sample rectangles does not mutate drawing');
+  await load(12,zoom);
+  await click(500*zoom,550*zoom);
+  // Avoid explicit connection points at quarter-edge positions.
+  await drag(300*zoom+1,438*zoom,20*zoom,20*zoom);
+  eq(await bounds('A'),{x:120*zoom,y:320*zoom,w:200*zoom,h:200*zoom},'outer border pixel starts rear rectangle drag');
+  eq(await bounds('B'),{x:200*zoom,y:400*zoom,w:200*zoom,h:200*zoom},'outer border drag does not move front rectangle');
+  await load(12,zoom);
+  await run(`graph.useCssTransforms=true;graph.view.scaleAndTranslate(${zoom},10,-100);graph.refresh();`);
+  eq(await click(510*zoom,550*zoom),['C'],'CSS zoom and translation select third rectangle');
+  eq(await click(310*zoom+1,350*zoom),['A'],'CSS transforms preserve rear outer border tolerance');
+  eq(await click(210*zoom-1,350*zoom),['B'],'CSS transforms preserve front outer border tolerance');
+  eq(await click(310*zoom+8,350*zoom),[],'CSS tolerance stays in screen pixels');
+  await run('graph.clearSelection();graph.useCssTransforms=false;graph.updateCssTransform();');
+  if(process.argv.includes('--sample-only')) continue;
   await load(11,zoom);
   const rectangleXml=await xml();
   const rearStroke=[460*zoom,250*zoom],frontStroke=[220*zoom,250*zoom];
