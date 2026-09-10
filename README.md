@@ -1,3 +1,10 @@
+# draw.io Desktop (Unofficial Build)
+
+> [!NOTE]
+> このリポジトリおよびリリースは **非公式（Unofficial）ビルド** です。
+> 公式リポジトリ ([jgraph/drawio-desktop](https://github.com/jgraph/drawio-desktop)) をベースに、図形・コンテナの選択操作性向上（グループ・コンテナ内子要素の直接選択、背面図形/枠線の選択改善、階層ホバーハンドル等）の独自パッチを適用しています。
+> 詳細は [docs/selection/implementation.md](docs/selection/implementation.md) を参照してください。
+
 About
 ----- 
 
@@ -6,6 +13,7 @@ About
 Download built binaries from the [releases section](https://github.com/jgraph/drawio-desktop/releases).
 
 **Can I use this app for free?** Yes, under the apache 2.0 license. If you don't change the code and accept it is provided "as-is", you can use it for any purpose.
+
 
 Windows installation
 --------------------
