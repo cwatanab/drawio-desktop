@@ -4,9 +4,9 @@
 
 ## 1. 階層ビューアとQuick Stylerを同梱する
 
-提供された [hierarchy-viewer.js](../../hierarchy-viewer.js) を基に、図形・グループ・レイヤーを一覧から選べる機能を追加する。キャンバス上で重なった図形も、行を指定して選択できるようにする。既存スクリプトにある名前変更、表示切替、順序・親子関係の変更も取り込み対象とする。
+提供された `hierarchy-viewer.js` を基に、図形・グループ・レイヤーを一覧から選べる機能を追加する。キャンバス上で重なった図形も、行を指定して選択できるようにする。既存スクリプトにある名前変更、表示切替、順序・親子関係の変更も取り込み対象とする。
 
-併せて [quick-styler.js](../../quick-styler.js) を取り込み、右クリックの「プロパティ」「スタイル」から図形の動作設定と保存済みスタイルを利用できるようにする。階層ビューアで対象を選び、キャンバス上で右クリックして設定する流れも使える。Quick Styler用のサイドバータブや、階層行専用の右クリックメニューは追加しない。
+併せて `quick-styler.js` を取り込み、右クリックの「プロパティ」「スタイル」から図形の動作設定と保存済みスタイルを利用できるようにする。階層ビューアで対象を選び、キャンバス上で右クリックして設定する流れも使える。Quick Styler用のサイドバータブや、階層行専用の右クリックメニューは追加しない。
 
 両機能は別々の同梱プラグインとして、既存のプラグイン設定から個別に有効化する案とする。初期状態ではどちらも無効とし、有効化・無効化の反映にはアプリの再起動を使う。一方だけでも利用でき、両方を有効にした場合の読み込み順にも依存させない。任意の外部JavaScriptを読み込む機能は追加しない。
 
@@ -228,8 +228,8 @@ Quick Stylerは `ui.menus.createPopupMenu` の既存処理を一度だけ呼ぶ�
 
 階層ビューアの初回調査はDesktop `37e5aee`、drawio `25b3cc584`。提供ファイルは628行で、`node --check hierarchy-viewer.js` は成功した。Quick Stylerの追加調査（2026-09-10）はDesktop `6b92d63`、drawio `25b3cc584`。提供ファイルは552行で、`node --check quick-styler.js` は成功した。提供プラグイン自体のGUI動作確認はどちらもまだ行っていない。
 
-- [hierarchy-viewer.js](../../hierarchy-viewer.js): `Draw.loadPlugin`、`mxWindow`、ツリー再描画、選択・名前・表示・ドラッグ操作の確認元。
-- [quick-styler.js](../../quick-styler.js): 11項目の `CONFIG`、`STYLE_KEYS`、接続ポイント、スタイル保存、右クリック拡張の確認元。第8章では取り込み後の仕様を定義し、現ファイルの挙動と異なる箇所を明記した。
+- `hierarchy-viewer.js`: `Draw.loadPlugin`、`mxWindow`、ツリー再描画、選択・名前・表示・ドラッグ操作の確認元。
+- `quick-styler.js`: 11項目の `CONFIG`、`STYLE_KEYS`、接続ポイント、スタイル保存、右クリック拡張の確認元。第8章では取り込み後の仕様を定義し、現ファイルの挙動と異なる箇所を明記した。
 - [App.js](../../drawio/src/main/webapp/js/diagramly/App.js): 同梱一覧とプラグイン初期化コールバック。
 - [ElectronApp.js](../../drawio/src/main/webapp/js/diagramly/ElectronApp.js): Desktopでの同梱読み込み、設定画面、開発モードの制約。
 - [EditorUi.js](../../drawio/src/main/webapp/js/grapheditor/EditorUi.js) と [Format.js](../../drawio/src/main/webapp/js/grapheditor/Format.js): 右サイドバーの管理と選択変更に伴う再描画。
