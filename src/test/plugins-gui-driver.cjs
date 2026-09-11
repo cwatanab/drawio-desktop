@@ -29,10 +29,18 @@ module.exports = async ({win, js, fs, pause}) =>
 	await js(`
 		window.c = id => graph.model.getCell(id);
 		window.row = id => document.querySelector('.geHierarchyRow[data-cell-id="'+id+'"]');
-		window.button = (id,kind) => row(id).querySelector('[data-hierarchy-action="'+kind+'"]');
 		window.treeTab = () => document.querySelector('[data-hierarchy-tab="hierarchy"]');
-		window.formatTab = () => document.querySelector('[data-hierarchy-tab="format"]');
-		window.modelXml = () => mxUtils.getXml(new mxCodec().encode(graph.model));
+		window.formatTab = () => {
+			const titles = Array.from(document.querySelectorAll('.geFormatTitleContainer .geFormatTitle:not([data-hierarchy-tab="hierarchy"])'));
+			const active = document.querySelector('.geFormatTitleContainer .geFormatTitle.geActiveFormatTitle:not([data-hierarchy-tab="hierarchy"])');
+			if (active) return active;
+			const graph = testUi.editor.graph;
+			const ss = testUi.getSelectionState();
+			const containsLabel = ss.containsLabel && !ss.transparentBounds;
+			const idx = containsLabel ? testUi.format.labelIndex :
+				(graph.isSelectionEmpty() ? testUi.format.diagramIndex : testUi.format.currentIndex);
+			return titles[idx] || titles[0];
+		};
 		window.pointer = (e,type) => e.dispatchEvent(new PointerEvent((mxClient.IS_POINTER?'pointer':'mouse')+type,{bubbles:true,button:0,pointerId:1,pointerType:'mouse'}));
 		window.menuItem = key => {
 			const find = parent => {for (const r of parent.tbody.rows) {if(r.dataset.quickStyler===key)return r;if(r.tbody){const found=find(r);if(found)return found;}}};
@@ -80,7 +88,7 @@ module.exports = async ({win, js, fs, pause}) =>
 	`);
 	await settle();
 	const original = await xml();
-	await check('testUi.format.container.parentNode===testUi.formatContainer', true, 'existing Format stays inside dock');
+	await check('testUi.format.container===testUi.formatContainer', true, 'existing Format stays inside dock');
 	await check('formatTab().getAttribute("aria-selected")', 'true', 'first enabled tab is Format');
 	await check('testUi.format.container.offsetHeight>100', true, 'Format content has usable height');
 	await click('treeTab()');
@@ -152,7 +160,7 @@ module.exports = async ({win, js, fs, pause}) =>
 	await check('graph.model.isVisible(c("G"))', true, 'Undo restores visibility');
 	await js('testUi.editor.undoManager.redo();');
 	await check('graph.model.isVisible(c("G"))', false, 'Redo hides subtree');
-	await check('document.querySelectorAll(".geHierarchyTabs").length', 1, 'tabs survive model changes');
+	await check('document.querySelectorAll("[data-hierarchy-tab=hierarchy]").length', 1, 'tabs survive model changes');
 	await click('formatTab()');
 	await check('testUi.format.container.children.length>0 && testUi.format.container.offsetHeight>100', true, 'Format redraw works after edits');
 	await click('treeTab()');
@@ -572,7 +580,7 @@ module.exports = async ({win, js, fs, pause}) =>
 	await click('treeTab()');
 	win.setSize(900,650);
 	await settle();
-	await check('(()=>{const h=testUi.formatContainer.getBoundingClientRect(),t=document.querySelector(".geHierarchyTabs").getBoundingClientRect(),p=document.querySelector(".geHierarchyPane").getBoundingClientRect();return h.width>100&&p.top>=t.bottom&&p.bottom<=h.bottom+1;})()', true, 'resized dock contents do not overlap tabs or host');
+	await check('(()=>{const h=testUi.formatContainer.getBoundingClientRect(),t=document.querySelector(".geFormatTitleContainer").getBoundingClientRect(),p=document.querySelector(".geHierarchyPane").getBoundingClientRect();return h.width>100&&p.top>=t.bottom&&p.bottom<=h.bottom+1;})()', true, 'resized dock contents do not overlap tabs or host');
 	fs.writeFileSync(path.join(screenshotDir,'hierarchy-narrow.png'),(await win.webContents.capturePage()).toPNG());
 	win.setSize(1440,1000);
 	await settle();
@@ -610,7 +618,7 @@ module.exports = async ({win, js, fs, pause}) =>
 	const hooks=await js('testUi.destroyFunctions.length');
 	for(const name of ['hierarchy-viewer','quick-styler','quick-styler','hierarchy-viewer'])await loadPlugin(name);
 	await check('testUi.destroyFunctions.length',hooks,'duplicate plugin initialization adds no cleanup hooks');
-	await check('document.querySelectorAll(".geHierarchyTabs").length',1,'duplicate initialization adds no tabs');
+	await check('document.querySelectorAll("[data-hierarchy-tab=hierarchy]").length',1,'duplicate initialization adds no tabs');
 	await js('graph.setSelectionCell(c("A"));openMenu("A");');
 	await check('graph.popupMenuHandler.tbody.querySelectorAll("[data-quick-styler]").length',2,'duplicate initialization adds no popup entries');
 	await js('activateItem("manage");activateItem("manage");');
@@ -620,7 +628,7 @@ module.exports = async ({win, js, fs, pause}) =>
 	await click('button("A","rename")');
 	await js('row("A").querySelector("input").value="Must cancel";testUi.hierarchyViewer.destroy();');
 	await check('c("A").value','Rear','plugin destruction cancels inline input');
-	await check('testUi.format.container===testUi.formatContainer && document.querySelectorAll(".geHierarchyTabs").length===0',true,'cleanup restores original Format host');
+	await check('testUi.format.container===testUi.formatContainer && document.querySelectorAll("[data-hierarchy-tab=hierarchy]").length===0',true,'cleanup restores original Format host');
 	await js(`localStorage.setItem('drawio-hierarchy-viewer-tab','broken');graph.container.focus();window.basePopup=testUi.menus.createPopupMenu;window.baseCalls=0;testUi.menus.createPopupMenu=function(){baseCalls++;return basePopup.apply(this,arguments);};void 0;`);
 	await settle();
 	await js('window.beforePluginFocus=document.activeElement;void 0;');
@@ -641,7 +649,7 @@ module.exports = async ({win, js, fs, pause}) =>
 	await check('testUi.dialogs.length',2,'confirmation is open for destruction test');
 	await js('testUi.destroy();');
 	await pause(100);
-	await check('document.querySelectorAll(".geHierarchyTabs,.geHierarchyPane,.geQuickStylerDialog").length',0,'EditorUi destruction removes plugin DOM');
+	await check('document.querySelectorAll("[data-hierarchy-tab=hierarchy],.geHierarchyPane,.geQuickStylerDialog").length',0,'EditorUi destruction removes plugin DOM');
 	await check('testUi.dialogs.length',0,'EditorUi destruction closes both owned dialogs after editor teardown');
 	await check('testUi.hierarchyViewer==null && testUi.quickStyler==null',true,'EditorUi destruction clears instance state');
 	console.log('PASS '+checks+' plugin GUI assertions');

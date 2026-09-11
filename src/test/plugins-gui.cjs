@@ -88,7 +88,7 @@ const firstWindow = new Promise(resolve => app.once('browser-window-created', (_
 		await pause(100);
 	}
 	assert.deepEqual(await js('[!!testUi.hierarchyViewer,!!testUi.quickStyler]'), flags, 'configured plugins load in normal Desktop');
-	assert.equal(await js('document.querySelectorAll(".geHierarchyTabs").length'), flags[0]?1:0, 'exactly one dock when enabled');
+	assert.equal(await js('document.querySelectorAll("[data-hierarchy-tab=hierarchy]").length'), flags[0]?1:0, 'exactly one dock when enabled');
 	assert.equal(await js('App.pluginRegistry.hierarchy'), files.hierarchy, 'hierarchy registry in bundled App');
 	assert.equal(await js('App.pluginRegistry.quickstyler'), files.quickstyler, 'styler registry in bundled App');
 	assert.equal(await js('App.publicPlugin.includes("hierarchy") && App.publicPlugin.includes("quickstyler")'), true, 'both plugins are selectable');
@@ -143,7 +143,7 @@ const firstWindow = new Promise(resolve => app.once('browser-window-created', (_
 			await ready();
 			for(let i=0;i<100 && !await js('!!testUi.hierarchyViewer');i++)await pause(100);
 			assert.equal(await js(key==='ui'?'Editor.currentTheme==="sketch"':'testUi.editor.chromeless'),true,'requested unsupported mode is active');
-			assert.equal(await js('document.querySelectorAll(".geHierarchyTabs").length'),0,'unsupported UI does not gain a dock');
+			assert.equal(await js('document.querySelectorAll("[data-hierarchy-tab=hierarchy]").length'),0,'unsupported UI does not gain a dock');
 			assert.equal(await js('testUi.actions.get("toggleHierarchyViewer").isEnabled()'),false,'unsupported UI action is disabled');
 			assert.equal(await js('testUi.actions.get("toggleHierarchyViewer").label.includes("通常の右サイドバー")'),true,'unsupported UI explains why');
 			console.log('PASS unsupported UI: '+key+'='+value);
