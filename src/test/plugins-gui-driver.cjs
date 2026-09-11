@@ -263,10 +263,14 @@ module.exports = async ({win, js, fs, pause}) =>
 	const properties = [
 		['expand','0',true],['autosize','1',false],['aspect','fixed',false],
 		['resizable','0',false],['movable','0',false],['container','1',false],
-		['noLabel','1',false],['snapToPoint','1',false],['allowArrows','0',false],['connectable','0',false]
+		['noLabel','1',false],['snapToPoint','1',false],['allowArrows','0',false],['connectable','0',false],
+		['rotatable','0',false],['cloneable','0',false],['deletable','0',false],
+		['editable','0',false],['movableLabel','1',false],['collapsible','1',false],['recursiveResize','0',true]
 	];
 	await js('graph.setSelectionCell(c("A"));openMenu("A");');
-	await check('Array.from(menuItem("properties").tbody.rows).filter(r=>r.dataset.quickStyler).length', 11, 'all 11 property entries');
+	await check('Array.from(menuItem("properties").tbody.rows).map(r=>r.dataset.quickStyler)',
+		['group-size','group-label','group-container','group-connections','group-restrictions'], 'properties grouped by purpose');
+	await check('Array.from(menuItem("properties").tbody.rows).reduce((n,r)=>n+r.tbody.rows.length,0)', 18, 'all 18 property entries');
 	await check('graph.popupMenuHandler.tbody.rows.length>3', true, 'original context menu retained');
 	for (const [id,value,initial] of properties)
 	{
@@ -310,9 +314,16 @@ module.exports = async ({win, js, fs, pause}) =>
 	await key('F10', ['shift']);
 	await check('document.activeElement.dataset.quickStyler', 'properties', 'Shift+F10 opens same popup using selection');
 	await key('Right');
-	await check('document.activeElement.dataset.quickStyler', 'expand', 'Right opens properties submenu');
+	await check('document.activeElement.dataset.quickStyler', 'group-size', 'Right opens property categories');
 	await key('Down');
-	await check('document.activeElement.dataset.quickStyler', 'autosize', 'Down moves through properties');
+	await check('document.activeElement.dataset.quickStyler', 'group-label', 'Down moves through categories');
+	await key('Right');
+	await check('document.activeElement.dataset.quickStyler', 'noLabel', 'Right opens category items');
+	await key('Left');
+	await check('document.activeElement.dataset.quickStyler', 'group-label', 'Left returns to category');
+	await key('Up');
+	await key('Right');
+	await check('document.activeElement.dataset.quickStyler', 'autosize', 'Right opens size properties');
 	await key('Enter');
 	await check('String(graph.getCurrentCellStyle(c("A")).autosize)', '1', 'keyboard invokes property change');
 	await check('treeTab().getAttribute("aria-selected")', 'true', 'styler does not switch hierarchy tab');

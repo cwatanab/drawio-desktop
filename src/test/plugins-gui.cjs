@@ -9,6 +9,7 @@ const {spawn} = require('node:child_process');
 
 const root = path.resolve(__dirname, '../..');
 const source = process.argv.includes('--source');
+const performance = process.argv.includes('--performance');
 const stage = Number(process.env.DRAWIO_PLUGIN_TEST_STAGE);
 const configurations = [[], ['hierarchy'], ['quickstyler'], ['hierarchy','quickstyler'], [], ['quickstyler','hierarchy']];
 const files = {hierarchy:'plugins/hierarchy-viewer.js',quickstyler:'plugins/quick-styler.js'};
@@ -36,7 +37,7 @@ const firstWindow = new Promise(resolve => app.once('browser-window-created', (_
 
 (async () =>
 {
-	if (Number.isNaN(stage))
+	if (Number.isNaN(stage) && !performance)
 	{
 		// Separate processes, one profile: verifies real restarts, not a test-only loader.
 		for (let i = 0; i < configurations.length; i++)
@@ -77,6 +78,13 @@ const firstWindow = new Promise(resolve => app.once('browser-window-created', (_
 		throw new Error('Desktop initialization timed out');
 	}
 	await ready();
+	if (performance)
+	{
+		await require('./plugins-performance-gui-driver.cjs')({win, js, fs, pause});
+		assert.deepEqual(errors, [], 'no renderer errors');
+		app.exit(0);
+		return;
+	}
 	assert.equal(await js('mxIsElectron && App.main.toString().includes("Skipped plugins")'),true,'actual Desktop loader is active');
 	win.setSize(1440, 1000);
 	const expected = configurations[stage];

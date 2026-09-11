@@ -11,7 +11,7 @@
   "scripts": {
     "start": "electron .",
     "sync": "node ./sync.cjs",
-    "test": "node --test src/test/cli-args.test.js src/test/msi-project-created.test.js src/test/window-bounds.test.js src/test/update-channel.test.js src/test/selection-container.test.js",
+    "test": "node --test src/test/cli-args.test.js src/test/msi-project-created.test.js src/test/window-bounds.test.js src/test/update-channel.test.js src/test/selection-container.test.js src/test/hierarchy-viewer-shapes.test.js",
     "test:selection-gui": "electron src/test/selection-gui.cjs",
     "test:plugins-gui": "electron src/test/plugins-gui.cjs",
     "release-win": "electron-builder --config electron-builder-win.json --publish always",
