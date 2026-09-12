@@ -362,6 +362,54 @@ test('hierarchy-viewer expands layers by default without one-time boolean flag',
 	assert.ok(pluginSource.includes('var isExpanded = !collapsedLayers.has(child.id);'), 'layers expand by default unless collapsed');
 });
 
-test('hierarchy-viewer installs window persistence when replacing pre-existing LayersWindow', () => {
-	assert.ok(pluginSource.includes("ui.installWindowPersistence('layers', ui.actions.layersWindow)"), 'persistence reinstalled on replace');
+test('hierarchy-viewer replaces existing windows using mxWindow dimensions, including hidden windows', () => {
+	const start = pluginSource.indexOf('if (ui.actions != null && ui.actions.layersWindow != null)');
+	const end = pluginSource.indexOf('var action = ui.actions.addAction', start);
+	assert.notEqual(start, -1);
+	assert.notEqual(end, -1);
+	const code = pluginSource.slice(start, end);
+
+	for (const visible of [true, false]) {
+		for (const [width, height] of [[212, 200], [480, 560]]) {
+			let destroyed = false;
+			let dimensions;
+			const listeners = {};
+			// mxWindow has getX/getY, but no getWidth/getHeight. CSS dimensions
+			// remain available while a window is hidden (unlike offsetWidth).
+			const oldWindow = {
+				window: {
+					div: {style: {width: width + 'px', height: height + 'px'}},
+					getX: () => 80,
+					getY: () => 120,
+					isVisible: () => visible
+				},
+				destroy() { destroyed = true; }
+			};
+			const replacement = {
+				window: {
+					addListener(name, listener) { listeners[name] = listener; },
+					setVisible(value) { this.visible = value; }
+				}
+			};
+			let persistence;
+			const ui = {
+				actions: {layersWindow: oldWindow},
+				installWindowPersistence(name, wrapper) { persistence = [name, wrapper]; }
+			};
+			vm.runInNewContext(code, {
+				ui,
+				CustomLayersWindow: function(editorUi, ...bounds) {
+					assert.equal(editorUi, ui);
+					dimensions = bounds;
+					return replacement;
+				}
+			});
+			assert.equal(destroyed, true);
+			assert.equal(ui.actions.layersWindow, replacement);
+			assert.deepEqual(dimensions, [80, 120, Math.max(width, 260), Math.max(height, 360)]);
+			assert.equal(replacement.window.visible, visible);
+			assert.deepEqual(persistence, ['layers', replacement]);
+			assert.deepEqual(Object.keys(listeners), ['show', 'hide']);
+		}
+	}
 });
