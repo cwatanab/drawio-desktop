@@ -71,14 +71,13 @@ const firstWindow = new Promise(resolve => app.once('browser-window-created', (_
 		};
 		reset();
 	`);
-	await check(`Array.from(menuItem('properties').tbody.rows).map(row => [row.textContent.trim(),
-		Array.from(row.tbody.rows).map(item => item.dataset.quickStyler)])`, [
-		['サイズ', ['autosize', 'aspect']],
-		['ラベル', ['noLabel', 'movableLabel', 'editable']],
-		['コンテナ', ['container', 'expand', 'recursiveResize', 'collapsible']],
-		['接続', ['snapToPoint', 'constraintPoints', 'allowArrows', 'connectable']],
-		['操作の制限', ['movable', 'resizable', 'rotatable', 'cloneable', 'deletable']]
-	], '18 properties grouped by purpose');
+	await check(`Array.from(menuItem('properties').tbody.rows).map(row => row.dataset.quickStyler || 'separator')`, [
+		'autosize', 'aspect', 'separator',
+		'noLabel', 'movableLabel', 'editable', 'separator',
+		'container', 'expand', 'recursiveResize', 'collapsible', 'separator',
+		'snapToPoint', 'constraintPoints', 'allowArrows', 'connectable', 'separator',
+		'movable', 'resizable', 'rotatable', 'cloneable', 'deletable'
+	], '18 properties flattened and grouped by dividers');
 	for (const [key, initial, value, restored] of [
 		['expand', true, '0', '1'], ['autosize', false, '1', '0'], ['aspect', false, 'fixed', '0'],
 		['resizable', false, '0', '1'], ['movable', false, '0', '1'], ['container', false, '1', '0'],
@@ -138,10 +137,14 @@ const firstWindow = new Promise(resolve => app.once('browser-window-created', (_
 		new KeyboardEvent('keydown', {key:'F10',shiftKey:true,bubbles:true,cancelable:true}));`);
 	await check('document.activeElement.dataset.quickStyler', 'properties', 'Shift+F10 focuses properties');
 	for (const [key, expected] of [
-		['ArrowRight','group-size'], ['End','group-restrictions'], ['ArrowRight','movable'],
-		['ArrowLeft','group-restrictions'], ['ArrowUp','group-connections'],
-		['ArrowRight','snapToPoint'], ['ArrowDown','constraintPoints'], ['ArrowRight','points-all'],
-		['ArrowLeft','constraintPoints'], ['ArrowRight','points-all'], ['ArrowDown','points-h']
+		['ArrowRight','autosize'], ['End','deletable'], ['Home','autosize'],
+		['ArrowUp','deletable'], ['ArrowDown','autosize'],
+		['ArrowDown','aspect'], ['ArrowDown','noLabel'], ['ArrowDown','movableLabel'],
+		['ArrowDown','editable'], ['ArrowDown','container'], ['ArrowDown','expand'],
+		['ArrowDown','recursiveResize'], ['ArrowDown','collapsible'],
+		['ArrowDown','snapToPoint'], ['ArrowDown','constraintPoints'],
+		['ArrowRight','points-all'], ['ArrowLeft','constraintPoints'],
+		['ArrowRight','points-all'], ['ArrowDown','points-h']
 	])
 	{
 		await js(`press(document.activeElement, '${key}');`);
