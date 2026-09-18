@@ -63,11 +63,16 @@ Windows ビルド（ポータブル ZIP）を作成し、GitHub Releases に公�
    ```bash
    git -C drawio merge --no-ff <tag_name> -m "Merge tag '<tag_name>' into selection-improvements"
    ```
-3. **コンフリクト解消の原則**:
-   - ビルド済みファイル (`drawio/src/main/webapp/js/app.min.js`, `viewer.min.js`, `viewer-static.min.js`):
-     当リポジトリの独自機能（選択改善・プラグイン・レイヤー対応）を含んでいるため、`git checkout --ours <file>` で当リポジトリ側の実装を維持する。
+3. **コンフリクト解消とランタイムバンドル再コンパイル**:
    - ソースコード (`bootstrap.js`, `diagramly/App.js`, `diagramly/EditorUi.js`, `Graph.js` 等):
      upstream の変更差分と当リポジトリの改善コードが競合していないか確認し、プラグイン読み込み順序やイベント処理が維持されるよう統合する。
+   - **ランタイムバンドル（app.min.js）の再コンパイル**:
+     デスクトップ版が実行時に読み込む `drawio/src/main/webapp/js/app.min.js` を、当リポジトリの変更を取り込んだ状態で最新バージョンとして再生成するため、以下を実行する:
+     ```bash
+     cd drawio/etc/build && ant -f build.xml app && cd ../../..
+     ```
+     ※ Java 21 および Apache Ant が必要（mise でインストール可能: `mise use -g java ant`）。
+     ※ 生成後、`EditorUi.VERSION` が目的のバージョンになっていることを確認。
 4. **バージョン同期と自動更新の無効化**:
    `drawio-desktop` ルートで以下を実行:
    ```bash
@@ -81,9 +86,8 @@ Windows ビルド（ポータブル ZIP）を作成し、GitHub Releases に公�
    ```
    - すべてのテスト（170+ 件）が通過することを確認する。
 6. **コミット**:
-   ```bash
-   git commit -am "chore: <tag_name> 取り込みおよびバージョン同期"
-   ```
+   - `drawio` サブモジュール: `git -C drawio commit -am "build: rebuild runtime bundles for <tag_name>"`
+   - `drawio-desktop`: `git commit -am "chore: <tag_name> 取り込みおよびバージョン同期"`
 
 ---
 
