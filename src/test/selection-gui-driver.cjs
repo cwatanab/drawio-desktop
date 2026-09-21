@@ -101,11 +101,30 @@ module.exports = async ({win, fs}) => {
    eq(await click(...rearStroke),[expected],'rectangle fill and pointer-event styles');
   }
   if(process.argv.includes('--rectangles-only')) continue;
+  await load(5,zoom);
+  await drag(...await center('B'),20*zoom,20*zoom);
+  eq(await selection(),['A'],'first drag selects the ordinary group');
+  eq((await bounds('C')).x,420*zoom,'first drag moves the whole ordinary group');
+
+  await load(5,zoom);
+  await run("var sibling=graph.insertVertex(graph.getDefaultParent(),'D','D',600,150,60,60);" +
+   "window.outerGroup=graph.groupCells(null,0,[graph.model.getCell('A'),sibling]);graph.clearSelection();");
+  eq(await click(...await center('B')),[await run('outerGroup.id')],'nested groups select the outer group first');
+  const outerSibling=await bounds('D');
+  await drag(...await center('B'),20*zoom,20*zoom);
+  eq((await bounds('D')).x,outerSibling.x+20*zoom,'nested group drag moves the outer sibling');
+  eq(await click(...await center('B')),['A'],'repeated click enters the nested group');
+  eq(await click(...await center('B')),['B'],'another click selects the nested child');
+
+  await load(1,zoom);
+  await run("var sibling=graph.insertVertex(graph.model.getCell('A'),'D','D',220,80,60,60);" +
+   "window.innerGroup=graph.groupCells(null,0,[graph.model.getCell('B'),sibling]);graph.clearSelection();");
+  eq(await click(...await center('B')),[await run('innerGroup.id')],'ordinary group inside a container remains grouped');
   for (let page=process.argv.includes('--extended-only')?11:1;page<=10;page++) {
    await load(page,zoom);
    const original=await xml();
    let b=await center('B');
-   eq(await click(...b),[page===7||page===8?'A':'B'],`page ${page} zoom ${zoom}: first click`);
+   eq(await click(...b),[page===5||page===7||page===8?'A':'B'],`page ${page} zoom ${zoom}: first click`);
    eq(await click(...b),[page===8?'A':'B'],`page ${page} zoom ${zoom}: repeated click`);
    eq(await xml(),original,'selection must not change serialized geometry or order');
    if(page<=4) {
@@ -123,9 +142,9 @@ module.exports = async ({win, fs}) => {
     await click(...b);await drag(...b,20*zoom,20*zoom);
     const after=await bounds('B');
     eq([after.x-before.x,after.y-before.y],[20*zoom,20*zoom],'selected child/group drag');
-    if(page===8) {
+    if(page===5||page===8) {
      const c=await bounds('C');
-     eq(c.x,420*zoom,'locked group moves sibling with child');
+     eq(c.x,420*zoom,'group drag moves sibling with child');
     }
     await run('undo.undo()');eq(await bounds('B'),before,'undo drag');
     await run('undo.redo()');eq(await bounds('B'),after,'redo drag');
@@ -135,6 +154,7 @@ module.exports = async ({win, fs}) => {
    }
    if(page===5||page===6) {
     await load(page,zoom);await click(...await center('B'));
+    if(page===5) await click(...await center('B'));
     eq(await click(...await center('C'),['shift']),['B','C'],'shift adds sibling');
     eq(await click(...await center('C'),['shift']),['B'],'shift removes sibling');
    }
