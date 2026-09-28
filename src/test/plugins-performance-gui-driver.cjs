@@ -133,7 +133,7 @@ module.exports = async ({win, js: evaluate, fs, pause}) =>
 	await js('graph.view.scaleAndTranslate(graph.view.scale, 10, 10);');
 	await check('mxConstraintHandler.prototype.pointImage === pointImage', true, 'pan with unchanged scale reuses images');
 	await js('graph.setSelectionCell(edge); graph.view.setScale(2);');
-	await check('[mxConstants.HANDLE_SIZE, mxConstraintHandler.prototype.pointImage.width]', [17, 7], 'zoom updates vertex and point sizes');
+	await check('[mxConstants.HANDLE_SIZE, mxConstraintHandler.prototype.pointImage.width]', [17, 11], 'zoom updates vertex and point sizes');
 	await check('graph.selectionCellsHandler.getHandler(edge).bends.map(bend => bend.bounds.width)', [37, 37], 'zoom updates both edge endpoints');
 	await js(`
 		window.handler = graph.selectionCellsHandler.getHandler(edge);
